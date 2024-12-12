@@ -64,8 +64,10 @@ class FrameExtractor:
             success, image = vid_cap.read()
             if success:
                 try:
-                    orig_file_location = f"{orig_file_dir}/{vidname}_{count}.{self.img_frmt}"
-                    resize_file_location = f"{resize_file_dir}/{vidname}_{count}.{self.img_frmt}"
+                    timestamp_ms = vid_cap.get(cv2.CAP_PROP_POS_MSEC)
+                    timestamp = time.strftime('%H:%M:%S', time.gmtime(timestamp_ms/1000))
+                    orig_file_location = f"{orig_file_dir}/{vidname}_{count}_{timestamp}.{self.img_frmt}"
+                    resize_file_location = f"{resize_file_dir}/{vidname}_{count}_{timestamp}.{self.img_frmt}"
 
                     # Write orig size image
                     cv2.imwrite(orig_file_location, image)

@@ -31,14 +31,18 @@
     <div id="imageModal" class="modal">
         <span class="close" onclick="closeModal()">&times;</span>
         <img class="modal-content" id="modalImage">
+        <div id="imageCaption" style="color: white; text-align: center; padding: 10px;"></div>
     </div>
 
     <script>
         function openModal(imageSrc) {
             const modal = document.getElementById('imageModal');
             const modalImg = document.getElementById('modalImage');
+            const caption = document.getElementById('imageCaption');
+            const filename = imageSrc.split('/').pop();
             modal.style.display = "block";
             modalImg.src = imageSrc;
+            caption.textContent = filename;
         }
 
         function closeModal() {
