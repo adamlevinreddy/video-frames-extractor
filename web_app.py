@@ -32,6 +32,7 @@ def upload_file():
         video_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
         file.save(video_path)
         
+        from concurrent.futures import ThreadPoolExecutor
         frame_extractor = FrameExtractor(
             out_dir=Path(app.config['OUTPUT_FOLDER']),
             img_frmt=settings.REQUIRED_IMAGE_FORMAT,
@@ -41,7 +42,8 @@ def upload_file():
             verbose=True
         )
         
-        frame_extractor.extract_frames(Path(video_path))
+        with ThreadPoolExecutor() as executor:
+            executor.submit(frame_extractor.extract_frames, Path(video_path))
         return 'Video processed successfully', 200
     except Exception as e:
         print(f"Error processing video: {str(e)}")
