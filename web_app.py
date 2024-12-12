@@ -41,7 +41,7 @@ def upload_file():
             verbose=True
         )
         
-        frame_extractor.extract_frames(video_path)
+        frame_extractor.extract_frames(Path(video_path))
         return 'Video processed successfully', 200
     except Exception as e:
         print(f"Error processing video: {str(e)}")
