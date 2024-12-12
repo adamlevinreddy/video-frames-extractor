@@ -72,9 +72,12 @@ class FrameExtractor:
                     # Write orig size image
                     cv2.imwrite(orig_file_location, image)
 
-                    # Resize and write the image
-                    img = imutils.resize(
-                        image, width=settings.REQUIRED_IMAGE_WIDTH)
+                    # Resize and write the image while maintaining aspect ratio
+                    height, width = image.shape[:2]
+                    aspect_ratio = width / height
+                    new_width = settings.REQUIRED_IMAGE_WIDTH
+                    new_height = int(new_width / aspect_ratio)
+                    img = cv2.resize(image, (new_width, new_height), interpolation=cv2.INTER_AREA)
                     cv2.imwrite(resize_file_location, img)
 
                     print(f"Done: {count}")
