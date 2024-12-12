@@ -1,0 +1,25 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Extracted Frames</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .frames-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+        .frame-item { width: 100%; }
+        .frame-item img { width: 100%; height: auto; border-radius: 5px; }
+        .button { background: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; display: inline-block; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Extracted Frames</h1>
+    <a href="/" class="button">Back to Upload</a>
+    <div class="frames-grid">
+        {% for frame in frames %}
+        <div class="frame-item">
+            <img src="{{ url_for('frame', filename=frame) }}" alt="Frame">
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

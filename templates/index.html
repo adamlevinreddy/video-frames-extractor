@@ -1,0 +1,23 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Video Frame Extractor</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .upload-form { margin: 20px 0; padding: 20px; border: 1px solid #ccc; border-radius: 5px; }
+        .button { background: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
+        .button:hover { background: #45a049; }
+    </style>
+</head>
+<body>
+    <h1>Video Frame Extractor</h1>
+    <div class="upload-form">
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            <input type="file" name="video" accept="video/*" required>
+            <button type="submit" class="button">Upload and Process</button>
+        </form>
+    </div>
+    <a href="/frames" class="button">View Extracted Frames</a>
+</body>
+</html>
