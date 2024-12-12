@@ -33,13 +33,13 @@ def upload_file():
         file.save(video_path)
         
         frame_extractor = FrameExtractor(
-            vid=Path(video_path),
-            out_dir=Path(app.config['OUTPUT_FOLDER']),
-            img_frmt=settings.REQUIRED_IMAGE_FORMAT,
-            required_frame_rate=settings.REQUIRED_FRAME_RATE,
-            start_from_seconds=settings.START_FROM_SECOND,
-            img_width=settings.REQUIRED_IMAGE_WIDTH,
-            verbose=True
+            video_path,
+            Path(app.config['OUTPUT_FOLDER']),
+            settings.REQUIRED_IMAGE_FORMAT,
+            settings.REQUIRED_FRAME_RATE,
+            settings.START_FROM_SECOND,
+            settings.REQUIRED_IMAGE_WIDTH,
+            True
         )
         
         frame_extractor.extract_frames()
