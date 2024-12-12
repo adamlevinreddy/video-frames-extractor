@@ -17,7 +17,7 @@
     <div class="frames-grid">
         {% for frame in frames %}
         <div class="frame-item">
-            <img src="{{ url_for('frame', filename=frame) }}" alt="Frame">
+            <img src="{{ url_for('static', filename='re_size_frames/' + frame) }}" alt="Frame">
         </div>
         {% endfor %}
     </div>
