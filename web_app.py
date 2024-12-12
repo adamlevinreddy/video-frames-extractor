@@ -6,7 +6,7 @@ import traceback
 from frame_extractor_multithread import FrameExtractor
 import settings
 
-app = Flask(__name__, static_folder=str(settings.OUTDIR))
+app = Flask(__name__, static_folder=str(settings.OUTDIR), static_url_path='/static')
 app.config['UPLOAD_FOLDER'] = 'videos'
 app.config['OUTPUT_FOLDER'] = str(settings.OUTDIR)
 
