@@ -52,8 +52,10 @@ def upload_file():
 def view_frames():
     try:
         resize_frames_dir = os.path.join(app.config['OUTPUT_FOLDER'], 're_size_frames')
+        print(f"Looking for frames in: {resize_frames_dir}")
         if not os.path.exists(resize_frames_dir):
             return 'No frames available', 404
+        print(f"Directory exists: {os.path.exists(resize_frames_dir)}")
             
         frames = [f for f in os.listdir(resize_frames_dir) if f.endswith(settings.REQUIRED_IMAGE_FORMAT)]
         return render_template('frames.html', frames=frames)
@@ -63,4 +65,5 @@ def view_frames():
 
 @app.route('/frame/<filename>')
 def frame(filename):
-    return send_from_directory(os.path.join(app.config['OUTPUT_FOLDER'], 're_size_frames'), filename)
+    resize_frames_dir = os.path.join(app.config['OUTPUT_FOLDER'], 're_size_frames')
+    return send_from_directory(resize_frames_dir, filename, as_attachment=False)
