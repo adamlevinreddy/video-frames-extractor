@@ -86,6 +86,9 @@ class FrameExtractor:
                 break
 
             count += 1
+            if count > frames:  # Stop if we've processed all frames
+                print(f"Reached end of video at frame {count-1}")
+                break
             sec += self.required_frame_rate
             vid_cap.set(cv2.CAP_PROP_POS_MSEC, sec * 1000)
 
