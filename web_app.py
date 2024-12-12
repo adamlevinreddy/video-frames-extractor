@@ -63,6 +63,9 @@ def view_frames():
         extractions = sorted([d for d in os.listdir(output_dir) 
                             if os.path.isdir(os.path.join(output_dir, d))])
         return render_template('frames.html', extractions=extractions)
+    except Exception as e:
+        print(f"Error viewing frames: {str(e)}")
+        return f'Error viewing frames: {str(e)}', 500
 
 @app.route('/frames/<extraction>')
 def view_extraction_frames(extraction):
@@ -79,5 +82,9 @@ def view_extraction_frames(extraction):
 
 @app.route('/frame/<filename>')
 def frame(filename):
-    resize_frames_dir = os.path.join(app.config['OUTPUT_FOLDER'], 're_size_frames')
-    return send_from_directory(resize_frames_dir, filename, as_attachment=False)
+    try:
+        resize_frames_dir = os.path.join(app.config['OUTPUT_FOLDER'], 're_size_frames')
+        return send_from_directory(resize_frames_dir, filename, as_attachment=False)
+    except Exception as e:
+        print(f"Error serving frame: {str(e)}")
+        return f'Error serving frame: {str(e)}', 500
