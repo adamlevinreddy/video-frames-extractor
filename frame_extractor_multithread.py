@@ -69,16 +69,24 @@ class FrameExtractor:
                     orig_file_location = f"{orig_file_dir}/{vidname}_{count}_{timestamp}.{self.img_frmt}"
                     resize_file_location = f"{resize_file_dir}/{vidname}_{count}_{timestamp}.{self.img_frmt}"
 
-                    # Write orig size image
-                    cv2.imwrite(orig_file_location, image)
-
-                    # Resize and write the image while maintaining aspect ratio
+                    # Calculate original aspect ratio
                     height, width = image.shape[:2]
                     aspect_ratio = width / height
+
+                    # Keep original resolution but fix aspect ratio if needed
+                    if width != int(height * aspect_ratio):
+                        new_height = height
+                        new_width = int(height * aspect_ratio)
+                        orig_img = cv2.resize(image, (new_width, new_height), interpolation=cv2.INTER_AREA)
+                    else:
+                        orig_img = image
+                    cv2.imwrite(orig_file_location, orig_img)
+
+                    # Create resized version while maintaining aspect ratio
                     new_width = settings.REQUIRED_IMAGE_WIDTH
                     new_height = int(new_width / aspect_ratio)
-                    img = cv2.resize(image, (new_width, new_height), interpolation=cv2.INTER_AREA)
-                    cv2.imwrite(resize_file_location, img)
+                    resized_img = cv2.resize(image, (new_width, new_height), interpolation=cv2.INTER_AREA)
+                    cv2.imwrite(resize_file_location, resized_img)
 
                     print(f"Done: {count}")
                 except Exception as ex:
