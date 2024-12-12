@@ -2,6 +2,7 @@
 from flask import Flask, render_template, request, send_from_directory
 from pathlib import Path
 import os
+import traceback
 from frame_extractor_multithread import FrameExtractor
 import settings
 
@@ -15,38 +16,51 @@ def index():
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
-    if 'video' not in request.files:
-        return 'No video file uploaded', 400
-    
-    file = request.files['video']
-    if file.filename == '':
-        return 'No selected file', 400
+    try:
+        if 'video' not in request.files:
+            return 'No video file uploaded', 400
+        
+        file = request.files['video']
+        if file.filename == '':
+            return 'No selected file', 400
 
-    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-    video_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-    file.save(video_path)
-    
-    frame_extractor = FrameExtractor(
-        Path(video_path),
-        Path(app.config['OUTPUT_FOLDER']),
-        settings.REQUIRED_IMAGE_FORMAT,
-        settings.REQUIRED_FRAME_RATE,
-        settings.START_FROM_SECOND,
-        settings.REQUIRED_IMAGE_WIDTH,
-        True
-    )
-    
-    frame_extractor.extract_frames()
-    return 'Video processed successfully', 200
+        # Create directories if they don't exist
+        os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+        os.makedirs(app.config['OUTPUT_FOLDER'], exist_ok=True)
+        os.makedirs(os.path.join(app.config['OUTPUT_FOLDER'], 're_size_frames'), exist_ok=True)
+        
+        video_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+        file.save(video_path)
+        
+        frame_extractor = FrameExtractor(
+            Path(video_path),
+            Path(app.config['OUTPUT_FOLDER']),
+            settings.REQUIRED_IMAGE_FORMAT,
+            settings.REQUIRED_FRAME_RATE,
+            settings.START_FROM_SECOND,
+            settings.REQUIRED_IMAGE_WIDTH,
+            True
+        )
+        
+        frame_extractor.extract_frames()
+        return 'Video processed successfully', 200
+    except Exception as e:
+        print(f"Error processing video: {str(e)}")
+        print(traceback.format_exc())
+        return f'Error processing video: {str(e)}', 500
 
 @app.route('/frames')
 def view_frames():
-    resize_frames_dir = os.path.join(app.config['OUTPUT_FOLDER'], 're_size_frames')
-    if not os.path.exists(resize_frames_dir):
-        return 'No frames available', 404
-        
-    frames = [f for f in os.listdir(resize_frames_dir) if f.endswith(settings.REQUIRED_IMAGE_FORMAT)]
-    return render_template('frames.html', frames=frames)
+    try:
+        resize_frames_dir = os.path.join(app.config['OUTPUT_FOLDER'], 're_size_frames')
+        if not os.path.exists(resize_frames_dir):
+            return 'No frames available', 404
+            
+        frames = [f for f in os.listdir(resize_frames_dir) if f.endswith(settings.REQUIRED_IMAGE_FORMAT)]
+        return render_template('frames.html', frames=frames)
+    except Exception as e:
+        print(f"Error viewing frames: {str(e)}")
+        return f'Error viewing frames: {str(e)}', 500
 
 @app.route('/frame/<filename>')
 def frame(filename):
