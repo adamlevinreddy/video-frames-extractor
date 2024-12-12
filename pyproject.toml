@@ -6,7 +6,6 @@ description = "Video frame extractor web application"
 requires-python = ">=3.12"
 dependencies = [
     "flask",
-    "opencv-python-headless",
     "imutils",
     "fire"
 ]
