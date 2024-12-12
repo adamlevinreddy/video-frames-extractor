@@ -24,17 +24,23 @@ def upload_file():
         if file.filename == '':
             return 'No selected file', 400
 
+        import time
+        timestamp = time.strftime("%Y%m%d_%H%M%S")
+        video_name = file.filename.rsplit('.', 1)[0]
+        
         # Create directories if they don't exist
         os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-        os.makedirs(app.config['OUTPUT_FOLDER'], exist_ok=True)
-        os.makedirs(os.path.join(app.config['OUTPUT_FOLDER'], 're_size_frames'), exist_ok=True)
+        frame_dir = os.path.join(app.config['OUTPUT_FOLDER'], f"{video_name}_{timestamp}")
+        os.makedirs(frame_dir, exist_ok=True)
+        os.makedirs(os.path.join(frame_dir, 'orig_size_frames'), exist_ok=True)
+        os.makedirs(os.path.join(frame_dir, 're_size_frames'), exist_ok=True)
         
         video_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
         file.save(video_path)
         
         from concurrent.futures import ThreadPoolExecutor
         frame_extractor = FrameExtractor(
-            out_dir=Path(app.config['OUTPUT_FOLDER']),
+            out_dir=Path(frame_dir),
             img_frmt=settings.REQUIRED_IMAGE_FORMAT,
             required_frame_rate=settings.REQUIRED_FRAME_RATE,
             start_from_seconds=settings.START_FROM_SECOND,
@@ -53,14 +59,20 @@ def upload_file():
 @app.route('/frames')
 def view_frames():
     try:
-        resize_frames_dir = os.path.join(app.config['OUTPUT_FOLDER'], 're_size_frames')
-        print(f"Looking for frames in: {resize_frames_dir}")
+        output_dir = app.config['OUTPUT_FOLDER']
+        extractions = sorted([d for d in os.listdir(output_dir) 
+                            if os.path.isdir(os.path.join(output_dir, d))])
+        return render_template('frames.html', extractions=extractions)
+
+@app.route('/frames/<extraction>')
+def view_extraction_frames(extraction):
+    try:
+        resize_frames_dir = os.path.join(app.config['OUTPUT_FOLDER'], extraction, 're_size_frames')
         if not os.path.exists(resize_frames_dir):
             return 'No frames available', 404
-        print(f"Directory exists: {os.path.exists(resize_frames_dir)}")
             
         frames = [f for f in os.listdir(resize_frames_dir) if f.endswith(settings.REQUIRED_IMAGE_FORMAT)]
-        return render_template('frames.html', frames=frames)
+        return render_template('frames.html', frames=frames, current_extraction=extraction)
     except Exception as e:
         print(f"Error viewing frames: {str(e)}")
         return f'Error viewing frames: {str(e)}', 500

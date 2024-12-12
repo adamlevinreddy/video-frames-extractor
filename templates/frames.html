@@ -9,6 +9,8 @@
         .frame-item { width: 100%; cursor: pointer; }
         .frame-item img { width: 100%; height: auto; border-radius: 5px; }
         .button { background: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; display: inline-block; margin-bottom: 20px; }
+        .extractions-list { margin: 20px 0; }
+        .extraction-link { display: block; padding: 10px; margin: 5px 0; background: #f0f0f0; text-decoration: none; color: #333; border-radius: 5px; }
         
         /* Modal styles */
         .modal { display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); }
@@ -19,10 +21,21 @@
 <body>
     <h1>Extracted Frames</h1>
     <a href="/" class="button">Back to Upload</a>
+    
+    {% if extractions is defined and not frames %}
+    <div class="extractions-list">
+        <h2>Available Extractions</h2>
+        {% for extraction in extractions %}
+        <a href="/frames/{{ extraction }}" class="extraction-link">{{ extraction }}</a>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if frames %}
     <div class="frames-grid">
         {% for frame in frames %}
-        <div class="frame-item" onclick="openModal('{{ url_for('static', filename='re_size_frames/' + frame) }}')">
-            <img src="{{ url_for('static', filename='re_size_frames/' + frame) }}" alt="Frame">
+        <div class="frame-item" onclick="openModal('/static/{{ current_extraction }}/re_size_frames/{{ frame }}')">
+            <img src="/static/{{ current_extraction }}/re_size_frames/{{ frame }}" alt="Frame">
         </div>
         {% endfor %}
     </div>
@@ -49,7 +62,6 @@
             document.getElementById('imageModal').style.display = "none";
         }
 
-        // Close modal when clicking outside the image
         window.onclick = function(event) {
             const modal = document.getElementById('imageModal');
             if (event.target == modal) {
@@ -57,5 +69,6 @@
             }
         }
     </script>
+    {% endif %}
 </body>
 </html>
