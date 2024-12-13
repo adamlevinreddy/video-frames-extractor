@@ -8,6 +8,8 @@
         .frames-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
         .frame-item { width: 100%; cursor: pointer; }
         .frame-item img { width: 100%; height: auto; border-radius: 5px; }
+        .system-count { position: absolute; bottom: 5px; right: 5px; background: rgba(0,0,0,0.7); color: white; padding: 2px 6px; border-radius: 3px; }
+        .frame-item { position: relative; }
         .button { background: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; display: inline-block; margin-bottom: 20px; }
         .extractions-list { margin: 20px 0; }
         .extraction-link { display: block; padding: 10px; margin: 5px 0; background: #f0f0f0; text-decoration: none; color: #333; border-radius: 5px; }
@@ -37,9 +39,16 @@
     {% if frames %}
     <div class="frames-grid">
         {% for frame in frames %}
-        <div class="frame-item" onclick="openModal('/static/{{ current_extraction }}/orig_size_frames/{{ frame }}')">
-            <img src="/static/{{ current_extraction }}/re_size_frames/{{ frame }}" alt="Frame {{ frame }}" onerror="this.onerror=null; this.src='/static/default.png'; this.style.opacity=0.5;">
-        </div>
+        {% if frame is string %}
+            <div class="frame-item" onclick="openModal('/static/{{ current_extraction }}/orig_size_frames/{{ frame }}')">
+                <img src="/static/{{ current_extraction }}/re_size_frames/{{ frame }}" alt="Frame {{ frame }}" onerror="this.onerror=null; this.src='/static/default.png'; this.style.opacity=0.5;">
+            </div>
+        {% else %}
+            <div class="frame-item" onclick="openModal('/static/{{ current_extraction }}/orig_size_frames/{{ frame[0] }}')">
+                <img src="/static/{{ current_extraction }}/re_size_frames/{{ frame[0] }}" alt="Frame {{ frame[0] }}" onerror="this.onerror=null; this.src='/static/default.png'; this.style.opacity=0.5;">
+                <div class="system-count">Systems: {{ frame[1] }}</div>
+            </div>
+        {% endif %}
         {% endfor %}
     </div>
 
