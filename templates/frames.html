@@ -55,18 +55,27 @@
 
     <script>
     async function processFrames(extraction) {
+        const button = document.querySelector('button[onclick="processFrames(\'' + extraction + '\')"]');
+        button.disabled = true;
+        button.textContent = 'Processing...';
+        
         try {
             const response = await fetch(`/process-frames/${extraction}`, {
                 method: 'POST'
             });
             if (response.ok) {
-                const results = await response.json();
+                await response.json();
                 window.location.reload();
             } else {
-                alert('Error processing frames: ' + await response.text());
+                const error = await response.text();
+                alert('Error processing frames: ' + error);
+                button.disabled = false;
+                button.textContent = 'Process Frames with Anthropic';
             }
         } catch (error) {
             alert('Error: ' + error);
+            button.disabled = false;
+            button.textContent = 'Process Frames with Anthropic';
         }
     }
     </script>
