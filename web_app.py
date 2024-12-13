@@ -30,7 +30,9 @@ def upload_file():
         
         # Create directories if they don't exist
         os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-        frame_dir = os.path.join(app.config['OUTPUT_FOLDER'], f"{video_name}_{timestamp}")
+        # Create timestamp-based directory for chronological sorting
+        timestamp = time.strftime("%Y%m%d_%H%M%S")
+        frame_dir = os.path.join(app.config['OUTPUT_FOLDER'], f"{timestamp}_{video_name}")
         os.makedirs(frame_dir, exist_ok=True)
         os.makedirs(os.path.join(frame_dir, 'orig_size_frames'), exist_ok=True)
         os.makedirs(os.path.join(frame_dir, 're_size_frames'), exist_ok=True)

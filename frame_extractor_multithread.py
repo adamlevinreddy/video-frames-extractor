@@ -69,9 +69,11 @@ class FrameExtractor:
             if success:
                 try:
                     timestamp_ms = vid_cap.get(cv2.CAP_PROP_POS_MSEC)
-                    timestamp = time.strftime('%H:%M:%S', time.gmtime(timestamp_ms/1000))
-                    orig_file_location = f"{orig_file_dir}/{vidname}_{count}_{timestamp}.{self.img_frmt}"
-                    resize_file_location = f"{resize_file_dir}/{vidname}_{count}_{timestamp}.{self.img_frmt}"
+                    # Format timestamp with padded numbers for proper sorting
+                    timestamp = time.strftime('%H_%M_%S', time.gmtime(timestamp_ms/1000))
+                    frame_num = str(count).zfill(5)  # Pad with zeros for proper sorting
+                    orig_file_location = f"{orig_file_dir}/{timestamp}_{frame_num}_{vidname}.{self.img_frmt}"
+                    resize_file_location = f"{resize_file_dir}/{timestamp}_{frame_num}_{vidname}.{self.img_frmt}"
 
                     # Calculate original aspect ratio
                     height, width = image.shape[:2]
