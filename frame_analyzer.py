@@ -8,6 +8,8 @@ class FrameAnalyzer:
         self.frames_dir = frames_dir
         self.threshold = threshold
         self.min_area = min_area
+        from system_detector import SystemDetector
+        self.system_detector = SystemDetector()
     
     def detect_changes(self):
         frames = sorted([f for f in self.frames_dir.glob('*.jpg')])
@@ -36,7 +38,9 @@ class FrameAnalyzer:
             # Check if any contour exceeds minimum area
             for contour in contours:
                 if cv2.contourArea(contour) > self.min_area:
-                    action_frames.append(frames[i+1])
+                    num_systems, annotated_image = self.system_detector.detect_systems(frames[i+1])
+                    cv2.imwrite(str(frames[i+1]).replace('.jpg', '_analyzed.jpg'), annotated_image)
+                    action_frames.append((frames[i+1], num_systems))
                     break
                     
         return action_frames

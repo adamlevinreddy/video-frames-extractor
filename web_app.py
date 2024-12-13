@@ -102,12 +102,12 @@ def view_action_frames(extraction):
             return f'Frames directory not found: {frames_dir}', 404
             
         analyzer = FrameAnalyzer(frames_dir, threshold=25, min_area=300)  # Adjusted thresholds
-        action_frames = analyzer.detect_changes()
+        results = analyzer.detect_changes()
         
-        if not action_frames:
+        if not results:
             return 'No action frames detected', 404
             
-        action_frames = [f.name for f in action_frames]
+        action_frames = [(f.name, count) for f, count in results]
         print(f"Detected {len(action_frames)} action frames")
         
         return render_template('frames.html', frames=action_frames, current_extraction=extraction)
