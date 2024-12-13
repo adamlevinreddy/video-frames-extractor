@@ -106,11 +106,11 @@ def view_action_frames(extraction):
         action_frame_names = [f.stem for f in analyzer.detect_changes() if not f.stem.endswith('_analyzed')]
         gc.collect()
         
-        if not action_frames:
-            return 'No action frames detected', 404
-            
         orig_frames_dir = Path(os.path.join(app.config['OUTPUT_FOLDER'], extraction, 'orig_size_frames'))
         action_frames = []
+        
+        if not action_frame_names:
+            return 'No action frames detected', 404
         for name in action_frame_names:
             orig_frame = f"{name}.{settings.REQUIRED_IMAGE_FORMAT}"
             if os.path.exists(os.path.join(orig_frames_dir, orig_frame)):
