@@ -96,6 +96,48 @@ def frame(filename):
 
 import gc
 
+@app.route('/save-crops', methods=['POST'])
+def save_crops():
+    try:
+        data = request.json
+        frame_path = os.path.join(app.config['OUTPUT_FOLDER'], 
+                                data['extraction'],
+                                data['frameType'],
+                                data['frame'])
+                                
+        if not os.path.exists(frame_path):
+            return jsonify({'success': False, 'error': 'Source image not found'}), 404
+            
+        img = Image.open(frame_path)
+        
+        # Create crops directory
+        crops_dir = os.path.join(app.config['OUTPUT_FOLDER'],
+                               data['extraction'],
+                               'crops')
+        os.makedirs(crops_dir, exist_ok=True)
+        
+        # Save each crop
+        for i, crop in enumerate(data['crops']):
+            # Create crop with PIL
+            cropped = img.crop((crop['x'], 
+                              crop['y'],
+                              crop['x'] + crop['width'],
+                              crop['y'] + crop['height']))
+                              
+            # Save cropped image
+            crop_name = f"{os.path.splitext(data['frame'])[0]}_crop_{i+1}.jpg"
+            crop_path = os.path.join(crops_dir, crop_name)
+            cropped.save(crop_path, 'JPEG')
+            
+        # Remove original frame if all crops saved successfully
+        os.remove(frame_path)
+        
+        return jsonify({'success': True})
+        
+    except Exception as e:
+        print(f"Error saving crops: {str(e)}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
 @app.route('/action-frames/<extraction>')
 def view_action_frames(extraction):
     try:

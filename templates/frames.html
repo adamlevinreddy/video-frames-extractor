@@ -41,8 +41,12 @@
     </div>
     <div class="frames-grid">
         {% for frame in frames %}
-        <div class="frame-item" onclick="openModal('/static/{{ current_extraction }}/{% if frame_type %}{{ frame_type }}{% else %}orig_size_frames{% endif %}/{{ frame }}')">
-            <img src="/static/{{ current_extraction }}/{% if frame_type %}{{ frame_type }}{% else %}orig_size_frames{% endif %}/{{ frame }}" alt="Frame {{ frame }}" onerror="this.src='/static/default.png'">
+        <div class="frame-item">
+            <canvas class="drawing-canvas" data-frame="{{ frame }}" data-extraction="{{ current_extraction }}" data-frame-type="{% if frame_type %}{{ frame_type }}{% else %}orig_size_frames{% endif %}"></canvas>
+            <div class="canvas-controls">
+                <button onclick="saveCrops(this.parentElement.previousElementSibling)">Save Crops</button>
+                <button onclick="clearCanvas(this.parentElement.previousElementSibling)">Clear</button>
+            </div>
             {% if html_results and frame in html_results %}
                 <div class="html-result">
                     <pre>{{ html_results[frame] }}</pre>
@@ -87,6 +91,109 @@
     </div>
     
     <script>
+    // Initialize all canvases when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.drawing-canvas').forEach(initCanvas);
+    });
+
+    function initCanvas(canvas) {
+        const img = new Image();
+        const frame = canvas.dataset.frame;
+        const extraction = canvas.dataset.extraction;
+        const frameType = canvas.dataset.frameType;
+        
+        img.onload = function() {
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+            
+            let isDrawing = false;
+            let startX, startY;
+            let rectangles = [];
+            
+            canvas.addEventListener('mousedown', function(e) {
+                const rect = canvas.getBoundingClientRect();
+                startX = e.clientX - rect.left;
+                startY = e.clientY - rect.top;
+                isDrawing = true;
+            });
+            
+            canvas.addEventListener('mousemove', function(e) {
+                if (!isDrawing) return;
+                
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0);
+                
+                // Draw saved rectangles
+                rectangles.forEach(r => {
+                    ctx.strokeStyle = 'red';
+                    ctx.strokeRect(r.x, r.y, r.width, r.height);
+                });
+                
+                // Draw current rectangle
+                ctx.strokeStyle = 'red';
+                ctx.strokeRect(startX, startY, x - startX, y - startY);
+            });
+            
+            canvas.addEventListener('mouseup', function(e) {
+                if (!isDrawing) return;
+                
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                rectangles.push({
+                    x: Math.min(startX, x),
+                    y: Math.min(startY, y),
+                    width: Math.abs(x - startX),
+                    height: Math.abs(y - startY)
+                });
+                
+                isDrawing = false;
+            });
+            
+            // Store rectangles in canvas for later use
+            canvas.rectangles = rectangles;
+        };
+        
+        img.src = `/static/${extraction}/${frameType}/${frame}`;
+    }
+    
+    function clearCanvas(canvas) {
+        canvas.rectangles = [];
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+        img.onload = () => ctx.drawImage(img, 0, 0);
+        img.src = `/static/${canvas.dataset.extraction}/${canvas.dataset.frameType}/${canvas.dataset.frame}`;
+    }
+    
+    function saveCrops(canvas) {
+        if (!canvas.rectangles || canvas.rectangles.length === 0) return;
+        
+        fetch('/save-crops', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                frame: canvas.dataset.frame,
+                extraction: canvas.dataset.extraction,
+                frameType: canvas.dataset.frameType,
+                crops: canvas.rectangles
+            })
+        }).then(response => response.json())
+          .then(data => {
+              if (data.success) {
+                  window.location.reload();
+              }
+          });
+    }
+
     function openModal(imgSrc) {
         document.getElementById('imageModal').style.display = "block";
         document.getElementById('modalImage').src = imgSrc;
