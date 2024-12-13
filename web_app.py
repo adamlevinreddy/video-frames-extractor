@@ -91,6 +91,8 @@ def frame(filename):
         print(f"Error serving frame: {str(e)}")
         return f'Error serving frame: {str(e)}', 500
 
+import gc
+
 @app.route('/action-frames/<extraction>')
 def view_action_frames(extraction):
     try:
@@ -101,13 +103,14 @@ def view_action_frames(extraction):
         if not frames_dir.exists():
             return f'Frames directory not found: {frames_dir}', 404
             
-        analyzer = FrameAnalyzer(frames_dir, threshold=25, min_area=300)  # Adjusted thresholds
-        results = analyzer.detect_changes()
+        analyzer = FrameAnalyzer(frames_dir, threshold=25, min_area=300, batch_size=20)  # Process in smaller batches
+        action_frames = analyzer.detect_changes()
+        gc.collect()  # Force garbage collection after processing
         
-        if not results:
+        if not action_frames:
             return 'No action frames detected', 404
             
-        action_frames = [(f.name, count) for f, count in results]
+        action_frames = [f.name for f in action_frames]
         print(f"Detected {len(action_frames)} action frames")
         
         return render_template('frames.html', frames=action_frames, current_extraction=extraction)
