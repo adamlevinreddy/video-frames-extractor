@@ -204,16 +204,18 @@
     function openModal(canvas) {
         const modal = document.getElementById('imageModal');
         const modalCanvas = document.getElementById('modalCanvas');
-        const ctx = modalCanvas.getContext('2d');
-    
-        modalCanvas.width = canvas.width;
-        modalCanvas.height = canvas.height;
-        ctx.drawImage(canvas, 0, 0);
-    
-        // Copy over the rectangles and event listeners
+        
+        // Copy over data attributes from original canvas
+        modalCanvas.dataset.frame = canvas.dataset.frame;
+        modalCanvas.dataset.extraction = canvas.dataset.extraction;
+        modalCanvas.dataset.frameType = canvas.dataset.frameType;
+        
+        // Copy rectangles reference
         modalCanvas.rectangles = canvas.rectangles || [];
+        
+        // Initialize the modal canvas
         initCanvas(modalCanvas);
-    
+        
         modal.style.display = "block";
     }
     
