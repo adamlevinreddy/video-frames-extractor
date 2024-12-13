@@ -60,7 +60,41 @@
     </div>
 
     <script>
-    async function processFrames(extraction) {
+    async function clearCanvas(canvas) {
+        const ctx = canvas.getContext('2d');
+        canvas.rectangles = canvas.rectangles || []; // Clear rectangles array
+        
+        // Redraw original image
+        const img = new Image();
+        img.onload = function() {
+            ctx.drawImage(img, 0, 0);
+        };
+        img.src = `/static/${canvas.dataset.extraction}/${canvas.dataset.frameType}/${canvas.dataset.frame}`;
+    }
+    
+    function saveCrops(canvas) {
+        if (!canvas.rectangles || canvas.rectangles.length === 0) return;
+        
+        fetch('/save-crops', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                frame: canvas.dataset.frame,
+                extraction: canvas.dataset.extraction,
+                frameType: canvas.dataset.frameType,
+                crops: canvas.rectangles
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                canvas.rectangles = canvas.rectangles || []; // Clear rectangles after successful save
+                clearCanvas(canvas); // Refresh canvas
+            }
+        });
+    }n processFrames(extraction) {
         const button = document.querySelector('button[onclick="processFrames(\'' + extraction + '\')"]');
         button.disabled = true;
         button.textContent = 'Processing...';
@@ -98,18 +132,120 @@
     
     <script>
     // Initialize all canvases when page loads
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function clearCanvas(canvas) {
+        const ctx = canvas.getContext('2d');
+        canvas.rectangles = canvas.rectangles || []; // Clear rectangles array
+        
+        // Redraw original image
+        const img = new Image();
+        img.onload = function() {
+            ctx.drawImage(img, 0, 0);
+        };
+        img.src = `/static/${canvas.dataset.extraction}/${canvas.dataset.frameType}/${canvas.dataset.frame}`;
+    }
+    
+    function saveCrops(canvas) {
+        if (!canvas.rectangles || canvas.rectangles.length === 0) return;
+        
+        fetch('/save-crops', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                frame: canvas.dataset.frame,
+                extraction: canvas.dataset.extraction,
+                frameType: canvas.dataset.frameType,
+                crops: canvas.rectangles
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                canvas.rectangles = canvas.rectangles || []; // Clear rectangles after successful save
+                clearCanvas(canvas); // Refresh canvas
+            }
+        });
+    }n() {
         document.querySelectorAll('.drawing-canvas').forEach(initCanvas);
         document.querySelectorAll('.drawing-canvas').forEach(canvas => canvas.addEventListener('click', () => openModal(canvas)));
     });
 
-    function initCanvas(canvas) {
+    function clearCanvas(canvas) {
+        const ctx = canvas.getContext('2d');
+        canvas.rectangles = canvas.rectangles || []; // Clear rectangles array
+        
+        // Redraw original image
+        const img = new Image();
+        img.onload = function() {
+            ctx.drawImage(img, 0, 0);
+        };
+        img.src = `/static/${canvas.dataset.extraction}/${canvas.dataset.frameType}/${canvas.dataset.frame}`;
+    }
+    
+    function saveCrops(canvas) {
+        if (!canvas.rectangles || canvas.rectangles.length === 0) return;
+        
+        fetch('/save-crops', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                frame: canvas.dataset.frame,
+                extraction: canvas.dataset.extraction,
+                frameType: canvas.dataset.frameType,
+                crops: canvas.rectangles
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                canvas.rectangles = canvas.rectangles || []; // Clear rectangles after successful save
+                clearCanvas(canvas); // Refresh canvas
+            }
+        });
+    }n initCanvas(canvas) {
         const img = new Image();
         const frame = canvas.dataset.frame;
         const extraction = canvas.dataset.extraction;
         const frameType = canvas.dataset.frameType;
         
+        img.onload = function clearCanvas(canvas) {
+        const ctx = canvas.getContext('2d');
+        canvas.rectangles = canvas.rectangles || []; // Clear rectangles array
+        
+        // Redraw original image
+        const img = new Image();
         img.onload = function() {
+            ctx.drawImage(img, 0, 0);
+        };
+        img.src = `/static/${canvas.dataset.extraction}/${canvas.dataset.frameType}/${canvas.dataset.frame}`;
+    }
+    
+    function saveCrops(canvas) {
+        if (!canvas.rectangles || canvas.rectangles.length === 0) return;
+        
+        fetch('/save-crops', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                frame: canvas.dataset.frame,
+                extraction: canvas.dataset.extraction,
+                frameType: canvas.dataset.frameType,
+                crops: canvas.rectangles
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                canvas.rectangles = canvas.rectangles || []; // Clear rectangles after successful save
+                clearCanvas(canvas); // Refresh canvas
+            }
+        });
+    }n() {
             canvas.width = img.width;
             canvas.height = img.height;
             const ctx = canvas.getContext('2d');
@@ -119,14 +255,82 @@
             let startX, startY;
             let rectangles = [];
             
-            canvas.addEventListener('mousedown', function(e) {
+            canvas.addEventListener('mousedown', function clearCanvas(canvas) {
+        const ctx = canvas.getContext('2d');
+        canvas.rectangles = canvas.rectangles || []; // Clear rectangles array
+        
+        // Redraw original image
+        const img = new Image();
+        img.onload = function() {
+            ctx.drawImage(img, 0, 0);
+        };
+        img.src = `/static/${canvas.dataset.extraction}/${canvas.dataset.frameType}/${canvas.dataset.frame}`;
+    }
+    
+    function saveCrops(canvas) {
+        if (!canvas.rectangles || canvas.rectangles.length === 0) return;
+        
+        fetch('/save-crops', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                frame: canvas.dataset.frame,
+                extraction: canvas.dataset.extraction,
+                frameType: canvas.dataset.frameType,
+                crops: canvas.rectangles
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                canvas.rectangles = canvas.rectangles || []; // Clear rectangles after successful save
+                clearCanvas(canvas); // Refresh canvas
+            }
+        });
+    }n(e) {
                 const rect = canvas.getBoundingClientRect();
                 startX = e.clientX - rect.left;
                 startY = e.clientY - rect.top;
                 isDrawing = true;
             });
             
-            canvas.addEventListener('mousemove', function(e) {
+            canvas.addEventListener('mousemove', function clearCanvas(canvas) {
+        const ctx = canvas.getContext('2d');
+        canvas.rectangles = canvas.rectangles || []; // Clear rectangles array
+        
+        // Redraw original image
+        const img = new Image();
+        img.onload = function() {
+            ctx.drawImage(img, 0, 0);
+        };
+        img.src = `/static/${canvas.dataset.extraction}/${canvas.dataset.frameType}/${canvas.dataset.frame}`;
+    }
+    
+    function saveCrops(canvas) {
+        if (!canvas.rectangles || canvas.rectangles.length === 0) return;
+        
+        fetch('/save-crops', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                frame: canvas.dataset.frame,
+                extraction: canvas.dataset.extraction,
+                frameType: canvas.dataset.frameType,
+                crops: canvas.rectangles
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                canvas.rectangles = canvas.rectangles || []; // Clear rectangles after successful save
+                clearCanvas(canvas); // Refresh canvas
+            }
+        });
+    }n(e) {
                 if (!isDrawing) return;
                 
                 const rect = canvas.getBoundingClientRect();
@@ -147,7 +351,41 @@
                 ctx.strokeRect(startX, startY, x - startX, y - startY);
             });
             
-            canvas.addEventListener('mouseup', function(e) {
+            canvas.addEventListener('mouseup', function clearCanvas(canvas) {
+        const ctx = canvas.getContext('2d');
+        canvas.rectangles = canvas.rectangles || []; // Clear rectangles array
+        
+        // Redraw original image
+        const img = new Image();
+        img.onload = function() {
+            ctx.drawImage(img, 0, 0);
+        };
+        img.src = `/static/${canvas.dataset.extraction}/${canvas.dataset.frameType}/${canvas.dataset.frame}`;
+    }
+    
+    function saveCrops(canvas) {
+        if (!canvas.rectangles || canvas.rectangles.length === 0) return;
+        
+        fetch('/save-crops', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                frame: canvas.dataset.frame,
+                extraction: canvas.dataset.extraction,
+                frameType: canvas.dataset.frameType,
+                crops: canvas.rectangles
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                canvas.rectangles = canvas.rectangles || []; // Clear rectangles after successful save
+                clearCanvas(canvas); // Refresh canvas
+            }
+        });
+    }n(e) {
                 if (!isDrawing) return;
                 
                 const rect = canvas.getBoundingClientRect();
@@ -172,14 +410,82 @@
     }
     
     function clearCanvas(canvas) {
-        canvas.rectangles = [];
+        const ctx = canvas.getContext('2d');
+        canvas.rectangles = canvas.rectangles || []; // Clear rectangles array
+        
+        // Redraw original image
+        const img = new Image();
+        img.onload = function() {
+            ctx.drawImage(img, 0, 0);
+        };
+        img.src = `/static/${canvas.dataset.extraction}/${canvas.dataset.frameType}/${canvas.dataset.frame}`;
+    }
+    
+    function saveCrops(canvas) {
+        if (!canvas.rectangles || canvas.rectangles.length === 0) return;
+        
+        fetch('/save-crops', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                frame: canvas.dataset.frame,
+                extraction: canvas.dataset.extraction,
+                frameType: canvas.dataset.frameType,
+                crops: canvas.rectangles
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                canvas.rectangles = canvas.rectangles || []; // Clear rectangles after successful save
+                clearCanvas(canvas); // Refresh canvas
+            }
+        });
+    }n clearCanvas(canvas) {
+        canvas.rectangles = canvas.rectangles || [];
         const ctx = canvas.getContext('2d');
         const img = new Image();
         img.onload = () => ctx.drawImage(img, 0, 0);
         img.src = `/static/${canvas.dataset.extraction}/${canvas.dataset.frameType}/${canvas.dataset.frame}`;
     }
     
+    function clearCanvas(canvas) {
+        const ctx = canvas.getContext('2d');
+        canvas.rectangles = canvas.rectangles || []; // Clear rectangles array
+        
+        // Redraw original image
+        const img = new Image();
+        img.onload = function() {
+            ctx.drawImage(img, 0, 0);
+        };
+        img.src = `/static/${canvas.dataset.extraction}/${canvas.dataset.frameType}/${canvas.dataset.frame}`;
+    }
+    
     function saveCrops(canvas) {
+        if (!canvas.rectangles || canvas.rectangles.length === 0) return;
+        
+        fetch('/save-crops', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                frame: canvas.dataset.frame,
+                extraction: canvas.dataset.extraction,
+                frameType: canvas.dataset.frameType,
+                crops: canvas.rectangles
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                canvas.rectangles = canvas.rectangles || []; // Clear rectangles after successful save
+                clearCanvas(canvas); // Refresh canvas
+            }
+        });
+    }n saveCrops(canvas) {
         if (!canvas.rectangles || canvas.rectangles.length === 0) return;
         
         fetch('/save-crops', {
@@ -201,7 +507,41 @@
           });
     }
 
-    function openModal(canvas) {
+    function clearCanvas(canvas) {
+        const ctx = canvas.getContext('2d');
+        canvas.rectangles = canvas.rectangles || []; // Clear rectangles array
+        
+        // Redraw original image
+        const img = new Image();
+        img.onload = function() {
+            ctx.drawImage(img, 0, 0);
+        };
+        img.src = `/static/${canvas.dataset.extraction}/${canvas.dataset.frameType}/${canvas.dataset.frame}`;
+    }
+    
+    function saveCrops(canvas) {
+        if (!canvas.rectangles || canvas.rectangles.length === 0) return;
+        
+        fetch('/save-crops', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                frame: canvas.dataset.frame,
+                extraction: canvas.dataset.extraction,
+                frameType: canvas.dataset.frameType,
+                crops: canvas.rectangles
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                canvas.rectangles = canvas.rectangles || []; // Clear rectangles after successful save
+                clearCanvas(canvas); // Refresh canvas
+            }
+        });
+    }n openModal(canvas) {
         const modal = document.getElementById('imageModal');
         const modalCanvas = document.getElementById('modalCanvas');
         
@@ -219,20 +559,190 @@
         modal.style.display = "block";
     }
     
-    function closeModal() {
+    function clearCanvas(canvas) {
+        const ctx = canvas.getContext('2d');
+        canvas.rectangles = canvas.rectangles || []; // Clear rectangles array
+        
+        // Redraw original image
+        const img = new Image();
+        img.onload = function() {
+            ctx.drawImage(img, 0, 0);
+        };
+        img.src = `/static/${canvas.dataset.extraction}/${canvas.dataset.frameType}/${canvas.dataset.frame}`;
+    }
+    
+    function saveCrops(canvas) {
+        if (!canvas.rectangles || canvas.rectangles.length === 0) return;
+        
+        fetch('/save-crops', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                frame: canvas.dataset.frame,
+                extraction: canvas.dataset.extraction,
+                frameType: canvas.dataset.frameType,
+                crops: canvas.rectangles
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                canvas.rectangles = canvas.rectangles || []; // Clear rectangles after successful save
+                clearCanvas(canvas); // Refresh canvas
+            }
+        });
+    }n closeModal() {
         document.getElementById('imageModal').style.display = "none";
     }
     
-    function copyToClipboard(text) {
-        navigator.clipboard.writeText(text).then(function() {
+    function clearCanvas(canvas) {
+        const ctx = canvas.getContext('2d');
+        canvas.rectangles = canvas.rectangles || []; // Clear rectangles array
+        
+        // Redraw original image
+        const img = new Image();
+        img.onload = function() {
+            ctx.drawImage(img, 0, 0);
+        };
+        img.src = `/static/${canvas.dataset.extraction}/${canvas.dataset.frameType}/${canvas.dataset.frame}`;
+    }
+    
+    function saveCrops(canvas) {
+        if (!canvas.rectangles || canvas.rectangles.length === 0) return;
+        
+        fetch('/save-crops', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                frame: canvas.dataset.frame,
+                extraction: canvas.dataset.extraction,
+                frameType: canvas.dataset.frameType,
+                crops: canvas.rectangles
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                canvas.rectangles = canvas.rectangles || []; // Clear rectangles after successful save
+                clearCanvas(canvas); // Refresh canvas
+            }
+        });
+    }n copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(function clearCanvas(canvas) {
+        const ctx = canvas.getContext('2d');
+        canvas.rectangles = canvas.rectangles || []; // Clear rectangles array
+        
+        // Redraw original image
+        const img = new Image();
+        img.onload = function() {
+            ctx.drawImage(img, 0, 0);
+        };
+        img.src = `/static/${canvas.dataset.extraction}/${canvas.dataset.frameType}/${canvas.dataset.frame}`;
+    }
+    
+    function saveCrops(canvas) {
+        if (!canvas.rectangles || canvas.rectangles.length === 0) return;
+        
+        fetch('/save-crops', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                frame: canvas.dataset.frame,
+                extraction: canvas.dataset.extraction,
+                frameType: canvas.dataset.frameType,
+                crops: canvas.rectangles
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                canvas.rectangles = canvas.rectangles || []; // Clear rectangles after successful save
+                clearCanvas(canvas); // Refresh canvas
+            }
+        });
+    }n() {
             alert('HTML copied to clipboard!');
-        }, function(err) {
+        }, function clearCanvas(canvas) {
+        const ctx = canvas.getContext('2d');
+        canvas.rectangles = canvas.rectangles || []; // Clear rectangles array
+        
+        // Redraw original image
+        const img = new Image();
+        img.onload = function() {
+            ctx.drawImage(img, 0, 0);
+        };
+        img.src = `/static/${canvas.dataset.extraction}/${canvas.dataset.frameType}/${canvas.dataset.frame}`;
+    }
+    
+    function saveCrops(canvas) {
+        if (!canvas.rectangles || canvas.rectangles.length === 0) return;
+        
+        fetch('/save-crops', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                frame: canvas.dataset.frame,
+                extraction: canvas.dataset.extraction,
+                frameType: canvas.dataset.frameType,
+                crops: canvas.rectangles
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                canvas.rectangles = canvas.rectangles || []; // Clear rectangles after successful save
+                clearCanvas(canvas); // Refresh canvas
+            }
+        });
+    }n(err) {
             console.error('Failed to copy: ', err);
             alert('Failed to copy HTML to clipboard.');
         });
     }
     
-    window.onclick = function(event) {
+    window.onclick = function clearCanvas(canvas) {
+        const ctx = canvas.getContext('2d');
+        canvas.rectangles = canvas.rectangles || []; // Clear rectangles array
+        
+        // Redraw original image
+        const img = new Image();
+        img.onload = function() {
+            ctx.drawImage(img, 0, 0);
+        };
+        img.src = `/static/${canvas.dataset.extraction}/${canvas.dataset.frameType}/${canvas.dataset.frame}`;
+    }
+    
+    function saveCrops(canvas) {
+        if (!canvas.rectangles || canvas.rectangles.length === 0) return;
+        
+        fetch('/save-crops', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                frame: canvas.dataset.frame,
+                extraction: canvas.dataset.extraction,
+                frameType: canvas.dataset.frameType,
+                crops: canvas.rectangles
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                canvas.rectangles = canvas.rectangles || []; // Clear rectangles after successful save
+                clearCanvas(canvas); // Refresh canvas
+            }
+        });
+    }n(event) {
         const modal = document.getElementById('imageModal');
         if (event.target == modal) {
             modal.style.display = "none";
