@@ -100,11 +100,11 @@ def view_extraction_frames(extraction):
         print(f"Error viewing frames: {str(e)}")
         return f'Error viewing frames: {str(e)}', 500
 
-@app.route('/frame/<filename>')
-def frame(filename):
+@app.route('/static/<extraction>/<frame_type>/<filename>')
+def serve_frame(extraction, frame_type, filename):
     try:
-        resize_frames_dir = os.path.join(app.config['OUTPUT_FOLDER'], 're_size_frames')
-        return send_from_directory(resize_frames_dir, filename, as_attachment=False)
+        frame_path = os.path.join(app.config['OUTPUT_FOLDER'], extraction, frame_type)
+        return send_from_directory(frame_path, filename, as_attachment=False)
     except Exception as e:
         print(f"Error serving frame: {str(e)}")
         return f'Error serving frame: {str(e)}', 500
