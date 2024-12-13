@@ -168,5 +168,9 @@ def save_crops(extraction, image_name):
         print(f"Error saving crops: {str(e)}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
+@app.route('/output/<path:filename>')
+def output_file(filename):
+    return send_from_directory(app.config['OUTPUT_FOLDER'], filename)
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=3000)

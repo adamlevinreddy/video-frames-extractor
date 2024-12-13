@@ -50,7 +50,7 @@
         
         function loadImage(index) {
             canvas.clear();
-            let imgPath = `/static/${currentExtraction}/${frameType}/${frames[index]}`;
+            let imgPath = `/output/${currentExtraction}/${frameType}/${frames[index]}`;
             fabric.Image.fromURL(imgPath, function(img) {
                 canvas.setWidth(img.width);
                 canvas.setHeight(img.height);
