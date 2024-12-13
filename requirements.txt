@@ -2,8 +2,5 @@
 flask
 imutils
 fire
-opencv-python
-Pillow
-anthropic
-python-dotenv
 opencv-python-headless
+opencv-python
