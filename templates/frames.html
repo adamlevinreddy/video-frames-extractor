@@ -36,6 +36,9 @@
     {% endif %}
 
     {% if frames %}
+    <div class="controls">
+        <button onclick="processFrames('{{ current_extraction }}')" class="button">Process Frames with Anthropic</button>
+    </div>
     <div class="frames-grid">
         {% for frame in frames %}
         <div class="frame-item" onclick="openModal('/static/{{ current_extraction }}/{% if frame_type %}{{ frame_type }}{% else %}orig_size_frames{% endif %}/{{ frame }}')">
@@ -43,12 +46,30 @@
             {% if html_results and frame in html_results %}
                 <div class="html-result">
                     <pre>{{ html_results[frame] }}</pre>
-                    <button class="copy-button" onclick="copyToClipboard(`{{ html_results[frame] }}`)">Copy HTML</button>
+                    <button class="copy-button" onclick="event.stopPropagation(); copyToClipboard(`{{ html_results[frame] }}`)">Copy HTML</button>
                 </div>
             {% endif %}
         </div>
         {% endfor %}
     </div>
+
+    <script>
+    async function processFrames(extraction) {
+        try {
+            const response = await fetch(`/process-frames/${extraction}`, {
+                method: 'POST'
+            });
+            if (response.ok) {
+                const results = await response.json();
+                window.location.reload();
+            } else {
+                alert('Error processing frames: ' + await response.text());
+            }
+        } catch (error) {
+            alert('Error: ' + error);
+        }
+    }
+    </script>
 
     <!-- Modal -->
     <div id="imageModal" class="modal">
