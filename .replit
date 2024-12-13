@@ -9,5 +9,8 @@ externalPort = 80
 
 [deployment]
 deploymentTarget = "cloudrun"
-build = ["pip install -r requirements.txt"]
-run = ["python3", "main.py"]
+build = [
+  "pip install -r requirements.txt",
+  "pip install opencv-python-headless"
+]
+run = ["python3", "web_app.py"]
