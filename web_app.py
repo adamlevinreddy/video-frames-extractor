@@ -106,6 +106,69 @@ def view_action_frames(extraction):
         action_frame_names = [f.stem for f in analyzer.detect_changes() if not f.stem.endswith('_analyzed')]
         gc.collect()
         
+        if not action_frames:
+            return 'No action frames detected', 404
+            
+        orig_frames_dir = Path(os.path.join(app.config['OUTPUT_FOLDER'], extraction, 'orig_size_frames'))
+        action_frames = []
+        for name in action_frame_names:
+            orig_frame = f"{name}.{settings.REQUIRED_IMAGE_FORMAT}"
+            if os.path.exists(os.path.join(orig_frames_dir, orig_frame)):
+                action_frames.append(orig_frame)
+                
+        action_frames = sorted(action_frames)
+        print(f"Detected {len(action_frames)} action frames")
+        
+        html_dir = os.path.join(app.config['OUTPUT_FOLDER'], extraction, 'html_results')
+        if os.path.exists(html_dir):
+            html_results = {}
+            for frame in action_frames:
+                html_path = os.path.join(html_dir, f"{Path(frame).stem}.html")
+                if os.path.exists(html_path):
+                    with open(html_path, 'r') as f:
+                        html_results[frame] = f.read()
+        else:
+            html_results = {}
+        
+        return render_template('frames.html', 
+                             frames=action_frames, 
+                             current_extraction=extraction,
+                             frame_type='orig_size_frames',
+                             html_results=html_results)
+    except Exception as e:
+        print(f"Error detecting action frames: {str(e)}")
+        return f'Error detecting action frames: {str(e)}', 500
+
+@app.route('/process-frames/<extraction>', methods=['POST'])
+def process_frames(extraction):
+    try:
+        from anthropic_handler import AnthropicHandler
+        api_key = os.getenv('ANTHROPIC_API_KEY')
+        if not api_key:
+            return 'ANTHROPIC_API_KEY not set', 400
+            
+        frames_dir = Path(os.path.join(app.config['OUTPUT_FOLDER'], extraction, 'orig_size_frames'))
+        html_dir = Path(os.path.join(app.config['OUTPUT_FOLDER'], extraction, 'html_results'))
+        
+        frame_paths = [p for p in frames_dir.glob(f'*.{settings.REQUIRED_IMAGE_FORMAT}')]
+        
+        handler = AnthropicHandler(api_key)
+        results = handler.process_frames(frame_paths, html_dir)
+        
+        return jsonify(results)
+    except Exception as e:
+        return f'Error processing frames: {str(e)}', 500
+    try:
+        from frame_analyzer import FrameAnalyzer
+        analyze_frames_dir = Path(os.path.join(app.config['OUTPUT_FOLDER'], extraction, 're_size_frames'))
+        
+        if not analyze_frames_dir.exists():
+            return f'Frames directory not found: {analyze_frames_dir}', 404
+            
+        analyzer = FrameAnalyzer(analyze_frames_dir, threshold=25, min_area=300, batch_size=20)
+        action_frame_names = [f.stem for f in analyzer.detect_changes() if not f.stem.endswith('_analyzed')]
+        gc.collect()
+        
         if not action_frame_names:
             return 'No action frames detected', 404
             
