@@ -26,7 +26,10 @@
     <div class="extractions-list">
         <h2>Available Extractions</h2>
         {% for extraction in extractions %}
-        <a href="/frames/{{ extraction }}" class="extraction-link">{{ extraction }}</a>
+        <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+            <a href="/frames/{{ extraction }}" class="extraction-link" style="flex: 1;">{{ extraction }}</a>
+            <a href="/action-frames/{{ extraction }}" class="button">View Action Frames</a>
+        </div>
         {% endfor %}
     </div>
     {% endif %}
