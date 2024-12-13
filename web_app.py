@@ -98,5 +98,9 @@ def view_action_frames(extraction):
         action_frames = analyzer.detect_changes()
         action_frames = [f.name for f in action_frames]
         return render_template('frames.html', frames=action_frames, current_extraction=extraction)
+    except Exception as e:
+        print(f"Error detecting action frames: {str(e)}")
+        return f'Error detecting action frames: {str(e)}', 500
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=3000)
