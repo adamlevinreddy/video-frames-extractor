@@ -47,6 +47,18 @@
     <div id="imageModal" class="modal">
         <span class="close" onclick="closeModal()">&times;</span>
         <img class="modal-content" id="modalImage">
+    </div>
+    
+    <script>
+    function openModal(imgSrc) {
+        document.getElementById('imageModal').style.display = "block";
+        document.getElementById('modalImage').src = imgSrc;
+    }
+    
+    function closeModal() {
+        document.getElementById('imageModal').style.display = "none";
+    }
+    </script>
         <div id="imageCaption" style="color: white; text-align: center; padding: 10px;"></div>
     </div>
 
