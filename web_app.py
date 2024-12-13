@@ -110,8 +110,10 @@ def view_action_frames(extraction):
         if not action_frames:
             return 'No action frames detected', 404
             
-        # Filter out non-action frames
+        # Get original frames where motion was detected (exclude analyzed versions)
         action_frames = [f.name for f in action_frames if not f.name.endswith('_analyzed.jpg')]
+        # Sort frames chronologically
+        action_frames = sorted(action_frames)
         print(f"Detected {len(action_frames)} action frames")
         
         return render_template('frames.html', frames=action_frames, current_extraction=extraction)
