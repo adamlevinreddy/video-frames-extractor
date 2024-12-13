@@ -228,7 +228,20 @@ def process_frames(extraction):
         action_frames = sorted(action_frames)
         print(f"Detected {len(action_frames)} action frames")
         
-        return render_template('frames.html', frames=action_frames, current_extraction=extraction, frame_type='orig_size_frames')
+        html_dir = os.path.join(app.config['OUTPUT_FOLDER'], extraction, 'html_results') 
+        html_results = {}
+        if os.path.exists(html_dir):
+            for frame in action_frames:
+                html_path = os.path.join(html_dir, f"{Path(frame).stem}.html")
+                if os.path.exists(html_path):
+                    with open(html_path, 'r') as f:
+                        html_results[frame] = f.read()
+                        
+        return render_template('frames.html', 
+                             frames=action_frames, 
+                             current_extraction=extraction,
+                             frame_type='orig_size_frames',
+                             html_results=html_results)
     except Exception as e:
         print(f"Error detecting action frames: {str(e)}")
         return f'Error detecting action frames: {str(e)}', 500
