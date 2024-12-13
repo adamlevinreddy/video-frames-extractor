@@ -43,16 +43,20 @@ class FrameExtractor:
         fps = int(vid_cap.get(cv2.CAP_PROP_FPS))
         try:
             seconds = int(frames/fps)
+            target_frames = int(seconds * self.required_frame_rate)
         except ZeroDivisionError as ex:
             print("Unable to detect seconds")
             seconds = 1
+            target_frames = 1
 
         if self.verbose:
             print("======================================")
             print(f"[OUT FILE DIRECTORY] - {self.out_dir}")
-            print(f"[TOTAL FRAMES] - {frames}")
-            print(f"[FRAMES PER SECOND] - {fps}")
+            print(f"[TOTAL SOURCE FRAMES] - {frames}")
+            print(f"[SOURCE FPS] - {fps}")
             print(f"[VIDEO LENGTH] - {seconds} seconds")
+            print(f"[TARGET EXTRACTION RATE] - {self.required_frame_rate} frames/sec")
+            print(f"[EXPECTED OUTPUT FRAMES] - {target_frames}")
         # start from 1 if 'start_from_seconds' is not passed.
         sec = int(self.start_from_seconds)
         vid_cap.set(cv2.CAP_PROP_POS_MSEC, sec * 1000)
