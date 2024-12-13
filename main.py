@@ -1,7 +1,7 @@
 
 from pathlib import Path
 import fire
-import frame_extractor
+import frame_extractor_multithread as frame_extractor
 import settings
 from web_app import app
 
