@@ -57,6 +57,9 @@ def upload_file():
         return f'Error processing video: {str(e)}', 500
 
 @app.route('/frames')
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=3000)
+
 def view_frames():
     try:
         output_dir = app.config['OUTPUT_FOLDER']
