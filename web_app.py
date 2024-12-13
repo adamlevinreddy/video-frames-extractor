@@ -88,5 +88,15 @@ def frame(filename):
     except Exception as e:
         print(f"Error serving frame: {str(e)}")
         return f'Error serving frame: {str(e)}', 500
+
+@app.route('/action-frames/<extraction>')
+def view_action_frames(extraction):
+    try:
+        from frame_analyzer import FrameAnalyzer
+        frames_dir = Path(os.path.join(app.config['OUTPUT_FOLDER'], extraction, 're_size_frames'))
+        analyzer = FrameAnalyzer(frames_dir)
+        action_frames = analyzer.detect_changes()
+        action_frames = [f.name for f in action_frames]
+        return render_template('frames.html', frames=action_frames, current_extraction=extraction)
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=3000)
