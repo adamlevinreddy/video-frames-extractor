@@ -57,9 +57,6 @@ def upload_file():
         return f'Error processing video: {str(e)}', 500
 
 @app.route('/frames')
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=3000)
-
 def view_frames():
     try:
         output_dir = app.config['OUTPUT_FOLDER']
@@ -91,3 +88,5 @@ def frame(filename):
     except Exception as e:
         print(f"Error serving frame: {str(e)}")
         return f'Error serving frame: {str(e)}', 500
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=3000)
