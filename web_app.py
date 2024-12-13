@@ -80,7 +80,22 @@ def view_extraction_frames(extraction):
             return 'No frames available', 404
             
         frames = [f for f in os.listdir(resize_frames_dir) if f.endswith(settings.REQUIRED_IMAGE_FORMAT)]
-        return render_template('frames.html', frames=frames, current_extraction=extraction)
+        frames = sorted(frames)
+        
+        html_dir = os.path.join(app.config['OUTPUT_FOLDER'], extraction, 'html_results')
+        html_results = {}
+        if os.path.exists(html_dir):
+            for frame in frames:
+                html_path = os.path.join(html_dir, f"{Path(frame).stem}.html")
+                if os.path.exists(html_path):
+                    with open(html_path, 'r') as f:
+                        html_results[frame] = f.read()
+                        
+        return render_template('frames.html', 
+                             frames=frames, 
+                             current_extraction=extraction,
+                             frame_type='re_size_frames',
+                             html_results=html_results)
     except Exception as e:
         print(f"Error viewing frames: {str(e)}")
         return f'Error viewing frames: {str(e)}', 500
