@@ -1,0 +1,31 @@
+Error processing video: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+Traceback (most recent call last):
+  File "/home/runner/video-frames-extractor/web_app.py", line 20, in upload_file
+    if 'video' not in request.files:
+                      ^^^^^^^^^^^^^
+  File "/nix/store/ga3l7j30qs1gi2pl67v54867wkk1ligm-python3.12-werkzeug-3.0.3/lib/python3.12/site-packages/werkzeug/utils.py", line 107, in __get__
+    value = self.fget(obj)  # type: ignore
+            ^^^^^^^^^^^^^^
+  File "/nix/store/ga3l7j30qs1gi2pl67v54867wkk1ligm-python3.12-werkzeug-3.0.3/lib/python3.12/site-packages/werkzeug/wrappers/request.py", line 494, in files
+    self._load_form_data()
+  File "/nix/store/pw25nkfnjzxfmjlynggnikiwzj9n0ww5-python3.12-flask-3.0.3/lib/python3.12/site-packages/flask/wrappers.py", line 115, in _load_form_data
+    super()._load_form_data()
+  File "/nix/store/ga3l7j30qs1gi2pl67v54867wkk1ligm-python3.12-werkzeug-3.0.3/lib/python3.12/site-packages/werkzeug/wrappers/request.py", line 268, in _load_form_data
+    data = parser.parse(
+           ^^^^^^^^^^^^^
+  File "/nix/store/ga3l7j30qs1gi2pl67v54867wkk1ligm-python3.12-werkzeug-3.0.3/lib/python3.12/site-packages/werkzeug/formparser.py", line 242, in parse
+    return parse_func(stream, mimetype, content_length, options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/ga3l7j30qs1gi2pl67v54867wkk1ligm-python3.12-werkzeug-3.0.3/lib/python3.12/site-packages/werkzeug/formparser.py", line 267, in _parse_multipart
+    form, files = parser.parse(stream, boundary, content_length)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/ga3l7j30qs1gi2pl67v54867wkk1ligm-python3.12-werkzeug-3.0.3/lib/python3.12/site-packages/werkzeug/formparser.py", line 371, in parse
+    for data in _chunk_iter(stream.read, self.buffer_size):
+  File "/nix/store/ga3l7j30qs1gi2pl67v54867wkk1ligm-python3.12-werkzeug-3.0.3/lib/python3.12/site-packages/werkzeug/formparser.py", line 416, in _chunk_iter
+    data = read(size)
+           ^^^^^^^^^^
+  File "/nix/store/ga3l7j30qs1gi2pl67v54867wkk1ligm-python3.12-werkzeug-3.0.3/lib/python3.12/site-packages/werkzeug/wsgi.py", line 562, in readinto
+    self.on_disconnect()
+  File "/nix/store/ga3l7j30qs1gi2pl67v54867wkk1ligm-python3.12-werkzeug-3.0.3/lib/python3.12/site-packages/werkzeug/wsgi.py", line 499, in on_disconnect
+    raise ClientDisconnected()
+werkzeug.exceptions.ClientDisconnected: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.

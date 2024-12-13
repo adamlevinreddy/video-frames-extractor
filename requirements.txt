@@ -3,3 +3,4 @@ flask
 imutils
 fire
 opencv-python-headless
+opencv-python
