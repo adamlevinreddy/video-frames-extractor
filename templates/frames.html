@@ -42,7 +42,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.6.0/fabric.min.js"></script>
     <script>
-        let frames = {{ frames|tojson }};
+        let frames = {{ frames|tojson if frames else '[]' }};
         let currentIndex = 0;
         let canvas = new fabric.Canvas('imageCanvas');
         let currentExtraction = "{{ current_extraction }}";
