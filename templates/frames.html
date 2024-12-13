@@ -34,55 +34,108 @@
     {% endif %}
 
     {% if frames %}
-    <div class="frames-grid">
-        {% for frame in frames %}
-        <div class="frame-item" onclick="openModal('/static/{{ current_extraction }}/{% if frame_type %}{{ frame_type }}{% else %}orig_size_frames{% endif %}/{{ frame }}')">
-            <img src="/static/{{ current_extraction }}/{% if frame_type %}{{ frame_type }}{% else %}orig_size_frames{% endif %}/{{ frame }}" alt="Frame {{ frame }}" onerror="this.src='/static/default.png'">
-        </div>
-        {% endfor %}
+    <div id="imageContainer">
+        <canvas id="imageCanvas"></canvas>
     </div>
-
-    <!-- Modal -->
-    <div id="imageModal" class="modal">
-        <span class="close" onclick="closeModal()">&times;</span>
-        <img class="modal-content" id="modalImage">
-    </div>
-    
-    <script>
-    function openModal(imgSrc) {
-        document.getElementById('imageModal').style.display = "block";
-        document.getElementById('modalImage').src = imgSrc;
-    }
-    
-    function closeModal() {
-        document.getElementById('imageModal').style.display = "none";
-    }
-    </script>
-        <div id="imageCaption" style="color: white; text-align: center; padding: 10px;"></div>
-    </div>
-
-    <script>
-        function openModal(imageSrc) {
-            const modal = document.getElementById('imageModal');
-            const modalImg = document.getElementById('modalImage');
-            const caption = document.getElementById('imageCaption');
-            const filename = imageSrc.split('/').pop();
-            modal.style.display = "block";
-            modalImg.src = imageSrc;
-            caption.textContent = filename;
-        }
-
-        function closeModal() {
-            document.getElementById('imageModal').style.display = "none";
-        }
-
-        window.onclick = function(event) {
-            const modal = document.getElementById('imageModal');
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
-    </script>
+    <button class="button" onclick="saveCrops()">Save Crop</button>
     {% endif %}
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.6.0/fabric.min.js"></script>
+    <script>
+        let frames = {{ frames|tojson }};
+        let currentIndex = 0;
+        let canvas = new fabric.Canvas('imageCanvas');
+        let currentExtraction = "{{ current_extraction }}";
+        let frameType = "{{ frame_type }}";
+        
+        function loadImage(index) {
+            canvas.clear();
+            let imgPath = `/static/${currentExtraction}/${frameType}/${frames[index]}`;
+            fabric.Image.fromURL(imgPath, function(img) {
+                canvas.setWidth(img.width);
+                canvas.setHeight(img.height);
+                canvas.add(img);
+                img.sendToBack();
+                canvas.isDrawingMode = false;
+
+                // Add rectangle drawing functionality
+                canvas.selection = false;
+                let rect, isDown, origX, origY;
+
+                canvas.on('mouse:down', function(o){
+                    isDown = true;
+                    let pointer = canvas.getPointer(o.e);
+                    origX = pointer.x;
+                    origY = pointer.y;
+                    rect = new fabric.Rect({
+                        left: origX,
+                        top: origY,
+                        fill: 'transparent',
+                        stroke: 'red',
+                        strokeWidth: 2,
+                        selectable: false,
+                        hasControls: false,
+                    });
+                    canvas.add(rect);
+                });
+
+                canvas.on('mouse:move', function(o){
+                    if (!isDown) return;
+                    let pointer = canvas.getPointer(o.e);
+                    if (origX > pointer.x){
+                        rect.set({ left: Math.abs(pointer.x) });
+                    }
+                    if (origY > pointer.y){
+                        rect.set({ top: Math.abs(pointer.y) });
+                    }
+                    rect.set({ width: Math.abs(origX - pointer.x) });
+                    rect.set({ height: Math.abs(origY - pointer.y) });
+                    canvas.renderAll();
+                });
+
+                canvas.on('mouse:up', function(o){
+                    isDown = false;
+                });
+            });
+        }
+        
+        function saveCrops() {
+            let objects = canvas.getObjects('rect');
+            let crops = objects.map(function(rect) {
+                return {
+                    left: rect.left,
+                    top: rect.top,
+                    width: rect.width * rect.scaleX,
+                    height: rect.height * rect.scaleY
+                };
+            });
+            let imgName = frames[currentIndex];
+            fetch(`/save-crops/${currentExtraction}/${imgName}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ crops: crops })
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Crops saved successfully!');
+                    // Move to next image
+                    currentIndex++;
+                    if (currentIndex < frames.length) {
+                        loadImage(currentIndex);
+                    } else {
+                        alert('All images processed.');
+                        window.location.href = '/frames'; // Redirect after completion
+                    }
+                } else {
+                    alert('Error saving crops.');
+                }
+            });
+        }
+        
+        // Load the first image
+        loadImage(currentIndex);
+    </script>
 </body>
 </html>
