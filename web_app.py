@@ -107,7 +107,9 @@ def view_extraction_frames(extraction):
 @app.route('/static/<extraction>/<frame_type>/<filename>')
 def serve_frame(extraction, frame_type, filename):
     try:
-        frame_path = os.path.join(app.config['OUTPUT_FOLDER'], extraction, frame_type)
+        frame_path = os.path.join(str(settings.OUTDIR), extraction, frame_type)
+        if not os.path.exists(frame_path):
+            os.makedirs(frame_path, exist_ok=True)
         return send_from_directory(frame_path, filename, as_attachment=False)
     except Exception as e:
         print(f"Error serving frame: {str(e)}")
