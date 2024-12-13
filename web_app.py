@@ -97,26 +97,30 @@ import gc
 def view_action_frames(extraction):
     try:
         from frame_analyzer import FrameAnalyzer
-        frames_dir = Path(os.path.join(app.config['OUTPUT_FOLDER'], extraction, 're_size_frames'))
-        print(f"Processing frames in directory: {frames_dir}")
+        analyze_frames_dir = Path(os.path.join(app.config['OUTPUT_FOLDER'], extraction, 're_size_frames'))
         
-        if not frames_dir.exists():
-            return f'Frames directory not found: {frames_dir}', 404
+        if not analyze_frames_dir.exists():
+            return f'Frames directory not found: {analyze_frames_dir}', 404
             
-        analyzer = FrameAnalyzer(frames_dir, threshold=25, min_area=300, batch_size=20)  # Process in smaller batches
-        action_frames = analyzer.detect_changes()
-        gc.collect()  # Force garbage collection after processing
+        analyzer = FrameAnalyzer(analyze_frames_dir, threshold=25, min_area=300, batch_size=20)
+        action_frame_names = [f.stem for f in analyzer.detect_changes() if not f.stem.endswith('_analyzed')]
+        gc.collect()
         
-        if not action_frames:
+        if not action_frame_names:
             return 'No action frames detected', 404
             
-        # Get original frames where motion was detected (exclude analyzed versions)
-        action_frames = [f.name for f in action_frames if not f.name.endswith('_analyzed.jpg')]
-        # Sort frames chronologically
+        # Get corresponding original size frames
+        orig_frames_dir = Path(os.path.join(app.config['OUTPUT_FOLDER'], extraction, 'orig_size_frames'))
+        action_frames = []
+        for name in action_frame_names:
+            orig_frame = f"{name}.{settings.REQUIRED_IMAGE_FORMAT}"
+            if os.path.exists(os.path.join(orig_frames_dir, orig_frame)):
+                action_frames.append(orig_frame)
+                
         action_frames = sorted(action_frames)
         print(f"Detected {len(action_frames)} action frames")
         
-        return render_template('frames.html', frames=action_frames, current_extraction=extraction)
+        return render_template('frames.html', frames=action_frames, current_extraction=extraction, frame_type='orig_size_frames')
     except Exception as e:
         print(f"Error detecting action frames: {str(e)}")
         return f'Error detecting action frames: {str(e)}', 500

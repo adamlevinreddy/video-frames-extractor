@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -37,8 +36,8 @@
     {% if frames %}
     <div class="frames-grid">
         {% for frame in frames %}
-        <div class="frame-item" onclick="openModal('/static/{{ current_extraction }}/orig_size_frames/{{ frame }}')">
-            <img src="/static/{{ current_extraction }}/orig_size_frames/{{ frame }}" alt="Frame {{ frame }}" onerror="this.src='/static/default.png'">
+        <div class="frame-item" onclick="openModal('/static/{{ current_extraction }}/{% if frame_type %}{{ frame_type }}{% else %}orig_size_frames{% endif %}/{{ frame }}')">
+            <img src="/static/{{ current_extraction }}/{% if frame_type %}{{ frame_type }}{% else %}orig_size_frames{% endif %}/{{ frame }}" alt="Frame {{ frame }}" onerror="this.src='/static/default.png'">
         </div>
         {% endfor %}
     </div>
