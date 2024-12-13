@@ -64,7 +64,7 @@ def view_frames():
         output_dir = app.config['OUTPUT_FOLDER']
         extractions = sorted([d for d in os.listdir(output_dir) 
                             if os.path.isdir(os.path.join(output_dir, d))])
-        return render_template('frames.html', extractions=extractions)
+        return render_template('frames.html', extractions=extractions if extractions else [], frames=None)
     except Exception as e:
         print(f"Error viewing frames: {str(e)}")
         return f'Error viewing frames: {str(e)}', 500
