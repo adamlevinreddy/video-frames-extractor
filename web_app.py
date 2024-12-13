@@ -9,9 +9,13 @@ from PIL import Image
 
 load_dotenv()
 
-app = Flask(__name__, static_folder=str(settings.OUTDIR), static_url_path='/static')
+app = Flask(__name__, static_folder=None)
 app.config['UPLOAD_FOLDER'] = 'videos'
 app.config['OUTPUT_FOLDER'] = str(settings.OUTDIR)
+
+@app.route('/static/<path:filename>')
+def serve_static(filename):
+    return send_from_directory(app.config['OUTPUT_FOLDER'], filename)
 
 @app.route('/')
 def index():

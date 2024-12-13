@@ -32,6 +32,6 @@ REQUIRED_IMAGE_FORMAT = 'jpg'               # EDIT: 4
 REQUIRED_IMAGE_WIDTH = 720                  # EDIT: 5
 
 # Output frames dirpath
-OUTDIR = BASE_ROOT/'skyscraper'             # EDIT: 6 (Required)
+OUTDIR = BASE_ROOT/'static'             # EDIT: 6 (Required)
 
 ### END EDIT ###
