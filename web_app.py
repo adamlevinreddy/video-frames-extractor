@@ -6,7 +6,7 @@ from frame_extractor_multithread import FrameExtractor
 import settings
 from PIL import Image
 
-app = Flask(__name__, static_folder=str(settings.OUTDIR), static_url_path='/static')
+app = Flask(__name__, static_folder='skyscraper', static_url_path='/static')
 app.config['UPLOAD_FOLDER'] = 'videos'
 app.config['OUTPUT_FOLDER'] = str(settings.OUTDIR)
 
