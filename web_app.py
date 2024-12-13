@@ -94,9 +94,20 @@ def view_action_frames(extraction):
     try:
         from frame_analyzer import FrameAnalyzer
         frames_dir = Path(os.path.join(app.config['OUTPUT_FOLDER'], extraction, 're_size_frames'))
-        analyzer = FrameAnalyzer(frames_dir)
+        print(f"Processing frames in directory: {frames_dir}")
+        
+        if not frames_dir.exists():
+            return f'Frames directory not found: {frames_dir}', 404
+            
+        analyzer = FrameAnalyzer(frames_dir, threshold=25, min_area=300)  # Adjusted thresholds
         action_frames = analyzer.detect_changes()
+        
+        if not action_frames:
+            return 'No action frames detected', 404
+            
         action_frames = [f.name for f in action_frames]
+        print(f"Detected {len(action_frames)} action frames")
+        
         return render_template('frames.html', frames=action_frames, current_extraction=extraction)
     except Exception as e:
         print(f"Error detecting action frames: {str(e)}")
