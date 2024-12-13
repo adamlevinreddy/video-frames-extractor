@@ -40,8 +40,10 @@ class AnthropicHandler:
             )
             print(f"Received response from Anthropic API for {image_path}")
             print(f"Response length: {len(message.content[0].text)} characters")
-        
-        return message.content[0].text
+            return message.content[0].text
+        except Exception as e:
+            print(f"Error processing image {image_path}: {str(e)}")
+            raise e
 
     def process_frames(self, frame_paths, output_dir):
         os.makedirs(output_dir, exist_ok=True)
