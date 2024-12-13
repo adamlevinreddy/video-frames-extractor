@@ -1,6 +1,5 @@
 
 from pathlib import Path
-import time
 import fire
 import frame_extractor
 import settings
