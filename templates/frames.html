@@ -4,16 +4,18 @@
     <title>Extracted Frames</title>
     <style>
         body { font-family: Arial, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; }
-        .frames-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+        .frames-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; padding: 20px; }
         .frame-item { width: 100%; cursor: pointer; }
-        .frame-item img { width: 100%; height: auto; border-radius: 5px; }
+        .frame-item canvas { width: 100%; height: auto; border-radius: 5px; transition: transform 0.2s; }
+        .frame-item canvas:hover { transform: scale(1.02); }
         .button { background: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; display: inline-block; margin-bottom: 20px; }
         .extractions-list { margin: 20px 0; }
         .extraction-link { display: block; padding: 10px; margin: 5px 0; background: #f0f0f0; text-decoration: none; color: #333; border-radius: 5px; }
         
         /* Modal styles */
-        .modal { display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); }
-        .modal-content { margin: auto; display: block; max-width: 90%; max-height: 90vh; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.95); }
+        .modal-content { margin: auto; display: block; width: 95%; height: 95%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .modal canvas { max-width: 100%; max-height: 100%; margin: auto; display: block; }
         .close { position: absolute; right: 35px; top: 15px; color: #f1f1f1; font-size: 40px; font-weight: bold; cursor: pointer; }
         .html-result { margin-top: 10px; border: 1px solid #ccc; padding: 10px; }
         .copy-button { background-color: #4CAF50; color: white; padding: 5px 10px; border: none; border-radius: 5px; cursor: pointer; }
@@ -87,13 +89,18 @@
     <!-- Modal -->
     <div id="imageModal" class="modal">
         <span class="close" onclick="closeModal()">&times;</span>
-        <img class="modal-content" id="modalImage">
+        <canvas id="modalCanvas" class="modal-content"></canvas>
+        <div class="canvas-controls" style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.7); padding: 10px; border-radius: 5px;">
+            <button onclick="saveCrops(document.getElementById('modalCanvas'))">Save Crops</button>
+            <button onclick="clearCanvas(document.getElementById('modalCanvas'))">Clear</button>
+        </div>
     </div>
     
     <script>
     // Initialize all canvases when page loads
     document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.drawing-canvas').forEach(initCanvas);
+        document.querySelectorAll('.drawing-canvas').forEach(canvas => canvas.addEventListener('click', () => openModal(canvas)));
     });
 
     function initCanvas(canvas) {
@@ -194,9 +201,20 @@
           });
     }
 
-    function openModal(imgSrc) {
-        document.getElementById('imageModal').style.display = "block";
-        document.getElementById('modalImage').src = imgSrc;
+    function openModal(canvas) {
+        const modal = document.getElementById('imageModal');
+        const modalCanvas = document.getElementById('modalCanvas');
+        const ctx = modalCanvas.getContext('2d');
+    
+        modalCanvas.width = canvas.width;
+        modalCanvas.height = canvas.height;
+        ctx.drawImage(canvas, 0, 0);
+    
+        // Copy over the rectangles and event listeners
+        modalCanvas.rectangles = canvas.rectangles || [];
+        initCanvas(modalCanvas);
+    
+        modal.style.display = "block";
     }
     
     function closeModal() {
