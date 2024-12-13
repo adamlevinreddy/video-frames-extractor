@@ -1,6 +1,7 @@
 
 import cv2
 import numpy as np
+import gc
 from pathlib import Path
 
 class FrameAnalyzer:
